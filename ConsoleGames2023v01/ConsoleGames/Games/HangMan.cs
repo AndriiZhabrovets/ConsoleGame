@@ -18,9 +18,6 @@ namespace ConsoleGames.Games
 
         public override Score Play(int level = 1)
         {
-            string WordsSimplePath = "words_simple.csv";
-            string WordsMediumPath = "words_medium.csv";
-            string WordsHardPath = "words_hard.csv";
 
             char[] Alphabet = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
 
@@ -30,7 +27,7 @@ namespace ConsoleGames.Games
                 {
                     UsedLetters[i] = '_';
                 }
-                string SecretWord = csvRandomReader(WordsSimplePath);
+                string SecretWord = csvRandomReader(ref level);
                 char[] EncodedWord = WordEncoder(SecretWord.ToArray());
                 bool EndGame = false;
                 HangTheMan(Lives, UsedLetters, EncodedWord, EndGame);
@@ -41,21 +38,37 @@ namespace ConsoleGames.Games
                     HangTheMan(Lives, UsedLetters, EncodedWord, EndGame);
                     if (EndGame)
                     {
+                    Console.WriteLine("Click The Button to Continue");
+                    Console.ReadKey();
                     return new Score();
                 }
                 }
         }
 
-        static string csvRandomReader(string PathToFile)
+        static string csvRandomReader(ref int level)
         {
+            string WordsSimplePath = "words_simple.csv";
+            string WordsMediumPath = "words_medium.csv";
+            string WordsHardPath = "words_hard.csv";
+            string ChosenPath = "";
+            if (level == 1)
+            {
+                ChosenPath = WordsSimplePath;
+            }else if (level == 2)
+            {
+                ChosenPath = WordsMediumPath;
+            }else if (level == 3)
+            {
+                ChosenPath = WordsHardPath;
+            }
 
-            using (var reader = new StreamReader(PathToFile))
+            using (var reader = new StreamReader(ChosenPath))
             {
                 string line = reader.ReadLine();
                 string[] csvArray = line.Split(',');
                 Random rand = new Random();
                 int RandomIndex = rand.Next(csvArray.Length);
-                return csvArray[RandomIndex].ToUpper();
+                return csvArray[RandomIndex].ToUpper().Trim();
 
             }
 
