@@ -11,4 +11,15 @@
   <ItemGroup>
     <Folder Include="Attachments\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="words_hard.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="words_medium.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="words_simple.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
