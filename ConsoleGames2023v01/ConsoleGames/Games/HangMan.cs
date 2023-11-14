@@ -2,6 +2,7 @@
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace ConsoleGames.Games
 {
@@ -18,7 +19,10 @@ namespace ConsoleGames.Games
 
         public override Score Play(int level = 1)
         {
-
+            Score score = new Score();
+            score.LevelCompleted = false;
+            bool levelCompleted = false;
+            if (level > LevelMax) level = LevelMax;
             char[] Alphabet = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
 
                 int Lives = 6;
@@ -34,13 +38,16 @@ namespace ConsoleGames.Games
                 while (true)
                 {
                     char Guess = ReadOneChar(UsedLetters, Alphabet);
-                    EvaluateTheSituation(Guess, SecretWord.ToArray(), ref Lives, ref UsedLetters, Alphabet, ref EncodedWord, ref EndGame);
+                    EvaluateTheSituation(Guess, SecretWord.ToArray(), ref Lives, ref UsedLetters, Alphabet, ref EncodedWord, ref EndGame, ref levelCompleted);
                     HangTheMan(Lives, UsedLetters, EncodedWord, EndGame);
                     if (EndGame)
                     {
                     Console.WriteLine("Click The Button to Continue");
                     Console.ReadKey();
-                    return new Score();
+                    score.Level = level;
+                    score.LevelCompleted = levelCompleted;
+                    return score;
+                    
                 }
                 }
         }
@@ -129,7 +136,7 @@ namespace ConsoleGames.Games
             return GuessLetter;
         }
 
-        static void EvaluateTheSituation(char Guess, char[] SecretWord, ref int Lives, ref char[] UsedLetters, char[] Alphabet, ref char[] EncodedWord, ref bool EndGame)
+        static void EvaluateTheSituation(char Guess, char[] SecretWord, ref int Lives, ref char[] UsedLetters, char[] Alphabet, ref char[] EncodedWord, ref bool EndGame, ref bool levelCompleted)
         {
             bool Hit = false;
             int AmountOfCorrect = SecretWord.Count(x => x == Guess);
@@ -149,6 +156,7 @@ namespace ConsoleGames.Games
             }
             if (!EncodedWord.Contains('_'))
             {
+                levelCompleted = true;
                 EndGame = true;
             }
             if (!Hit)
