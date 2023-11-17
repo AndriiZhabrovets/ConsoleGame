@@ -13,7 +13,7 @@ namespace ConsoleGames.Games
         public override string Rules => "The program accepts only letter";
         public override string Credits => "Zhabrovets Andrii, anzhabro@ksr.ch";
         public override int Year => 2023;
-        public override bool TheHigherTheBetter => false;
+        public override bool TheHigherTheBetter => true;
         public override int LevelMax => 3;
         public override Score HighScore { get; set; }
 
@@ -29,7 +29,7 @@ namespace ConsoleGames.Games
 
             if (level > LevelMax) level = LevelMax;
 
-            char[] Alphabet = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+            char[] Alphabet = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'Ä','Ö','Ü'};
 
             int Lives = 6;
             char[] UsedLetters = new char[Alphabet.Length];
@@ -40,12 +40,12 @@ namespace ConsoleGames.Games
             string SecretWord = csvRandomReader(level);
             char[] EncodedWord = WordEncoder(SecretWord.ToArray());
             bool EndGame = false;
-            HangTheMan(Lives, UsedLetters, EncodedWord, EndGame);
+            HangTheMan(Lives, UsedLetters, EncodedWord, EndGame, ref level, LevelMax);
             while (true)
             {
                 char Guess = ReadOneChar(UsedLetters, Alphabet);
                 EvaluateTheSituation(Guess, SecretWord.ToArray(), ref Lives, ref UsedLetters, Alphabet, ref EncodedWord, ref EndGame, ref levelCompleted);
-                HangTheMan(Lives, UsedLetters, EncodedWord, EndGame);
+                HangTheMan(Lives, UsedLetters, EncodedWord, EndGame, ref level, LevelMax);
                 if (EndGame)
                 {
                     Console.WriteLine("Click The Button to Continue");
@@ -154,7 +154,7 @@ namespace ConsoleGames.Games
             }
         }
 
-        static void HangTheMan(int AmountLives, char[] UsedLetters, char[] EncodedWord, bool GameOver)
+        static void HangTheMan(int AmountLives, char[] UsedLetters, char[] EncodedWord, bool GameOver, ref int level, int LevelMax)
         {
             Console.Clear();
             string Hangman = "";
@@ -387,7 +387,15 @@ Used letters:
             }
             else if (AmountLives != 0 && GameOver)
             {
-                Console.WriteLine("You won!\n");
+                if (level < LevelMax)
+                {
+                    Console.WriteLine("You won! You can move to level {0}.\n", level+1);
+                }
+                else
+                {
+                    Console.WriteLine("You won! You have reached the maximum level. Try to improve your score now by using less lives.");
+                }
+                    
             }
 
         }
