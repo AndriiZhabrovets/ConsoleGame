@@ -393,7 +393,7 @@ Used letters:
                 }
                 else
                 {
-                    Console.WriteLine("You won! You have reached the maximum level. Try to improve your score now by using less lives.");
+                    Console.WriteLine("You won! Congratulations! You have reached the maximum level. Try to improve your score now by using less lives.");
                 }
                     
             }
