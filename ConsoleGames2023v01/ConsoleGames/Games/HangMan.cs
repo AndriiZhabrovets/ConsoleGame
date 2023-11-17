@@ -17,42 +17,51 @@ namespace ConsoleGames.Games
         public override int LevelMax => 3;
         public override Score HighScore { get; set; }
 
+
+
+
         public override Score Play(int level = 1)
         {
             Score score = new Score();
             score.LevelCompleted = false;
+
             bool levelCompleted = false;
+
             if (level > LevelMax) level = LevelMax;
+
             char[] Alphabet = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
 
-                int Lives = 6;
-                char[] UsedLetters = new char[Alphabet.Length];
-                for (int i = 0; i < Alphabet.Length; i++)
-                {
-                    UsedLetters[i] = '_';
-                }
-                string SecretWord = csvRandomReader(ref level);
-                char[] EncodedWord = WordEncoder(SecretWord.ToArray());
-                bool EndGame = false;
+            int Lives = 6;
+            char[] UsedLetters = new char[Alphabet.Length];
+            for (int i = 0; i < Alphabet.Length; i++)
+            {
+                UsedLetters[i] = '_';
+            }
+            string SecretWord = csvRandomReader(level);
+            char[] EncodedWord = WordEncoder(SecretWord.ToArray());
+            bool EndGame = false;
+            HangTheMan(Lives, UsedLetters, EncodedWord, EndGame);
+            while (true)
+            {
+                char Guess = ReadOneChar(UsedLetters, Alphabet);
+                EvaluateTheSituation(Guess, SecretWord.ToArray(), ref Lives, ref UsedLetters, Alphabet, ref EncodedWord, ref EndGame, ref levelCompleted);
                 HangTheMan(Lives, UsedLetters, EncodedWord, EndGame);
-                while (true)
+                if (EndGame)
                 {
-                    char Guess = ReadOneChar(UsedLetters, Alphabet);
-                    EvaluateTheSituation(Guess, SecretWord.ToArray(), ref Lives, ref UsedLetters, Alphabet, ref EncodedWord, ref EndGame, ref levelCompleted);
-                    HangTheMan(Lives, UsedLetters, EncodedWord, EndGame);
-                    if (EndGame)
-                    {
                     Console.WriteLine("Click The Button to Continue");
                     Console.ReadKey();
                     score.Level = level;
                     score.LevelCompleted = levelCompleted;
-                    return score;
+                    score.Points = Lives;
+                    break;
                     
                 }
-                }
+                
+            }
+            return score;
         }
 
-        static string csvRandomReader(ref int level)
+        static string csvRandomReader(int level)
         {
             string WordsSimplePath = "words_simple.csv";
             string WordsMediumPath = "words_medium.csv";
@@ -80,31 +89,6 @@ namespace ConsoleGames.Games
             }
 
 
-        }
-        static string ReadSecretWord(char[] WhiteList)
-        {
-            Console.Clear();
-            string IntroMessage = "\n██╗  ██╗ █████╗ ███╗   ██╗ ██████╗ ███╗   ███╗ █████╗ ███╗   ██╗\n██║  ██║██╔══██╗████╗  ██║██╔════╝ ████╗ ████║██╔══██╗████╗  ██║\n███████║███████║██╔██╗ ██║██║  ███╗██╔████╔██║███████║██╔██╗ ██║\n██╔══██║██╔══██║██║╚██╗██║██║   ██║██║╚██╔╝██║██╔══██║██║╚██╗██║\n██║  ██║██║  ██║██║ ╚████║╚██████╔╝██║ ╚═╝ ██║██║  ██║██║ ╚████║\n╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝\n                                                                \n";
-            Console.Write(IntroMessage);
-            string SecretWord = "";
-            bool Error = true;
-            while (Error)
-            {
-                Console.WriteLine("Enter your secret word: ");
-                SecretWord = Console.ReadLine().ToUpper();
-                Error = false;
-                for (int i = 0; i < SecretWord.Length; i++)
-                {
-                    if (!WhiteList.Contains(SecretWord[i]))
-                    {
-                        Console.WriteLine("Wrong Input");
-                        Error = true;
-                        break;
-                    }
-                }
-                Console.Clear();
-            }
-            return SecretWord;
         }
 
         static char ReadOneChar(char[] UsedLetters, char[] WhiteList)
