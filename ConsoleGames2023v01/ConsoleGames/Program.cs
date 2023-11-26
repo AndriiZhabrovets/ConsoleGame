@@ -9,7 +9,8 @@ namespace ConsoleGames
     {
         static Game[] gameArray = new Game[] {
             new Games.GuessNumber(),
-            new Games.HangMan()
+            new Games.HangMan(),
+            new Games.AsteroidsGame()
         };
 
         static Game currentGame;
